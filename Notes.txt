@@ -1,0 +1,46 @@
+The link to submit a request for download of the Washington State Voter Registration Database is below:
+https://www.sos.wa.gov/elections/vrdb/extract-requests.aspx
+
+Using PDFPig to process the PDF contents https://github.com/UglyToad/PdfPig
+
+
+Deploying
+---------
+1. Create a VRDB folder elsewhere for depositing the pieces of the package.
+2. Build the release configuration of the Setup program and copy the output to the VRDB folder.  Include any folders of dependency assemblies.
+4. Copy the Washington Voter Registration Database extract file (e.g., 202101_VRDB_Extract.txt) to the VRDB folder.
+5. Copy the extract permissions document (e.g., Extract Readme.pdf) to the VRDB folder.
+6. Right-click the VRDB folder and create a VRDB.zip archive.
+7. Copy the archive to the distribution server.
+8. Delete the VRDB folder.
+
+
+Future
+------
+
+Need to review the search comparison:
+	spSearch is using LIKE on FirstName and LastName but doesn't use any wildcards -- so what is the point?
+	spCompareSearch is using LIKE on FirstName but uses a terminating wildcard -- again, this seems pointless since it is reading the name from the report.  It also compares the first letter of the middle name (if present in the member data).
+
+Could add option to output results to an XLSX (if Excel is present, and using the correct conditional formatting) or to a PDF (with highlighting in place).
+
+Units chould be in Address2.  Would need to update our addresses and then adjust the report and program to include Addresss2.
+	But first attempt caused lots of issues for identifying fields
+	Too much data on the page so it started bleeding between the columns reducing the space; initial issue was between headings "Gender" and "Address2"
+
+Add check for over a year since data load?
+
+Add Database project where the output (MDF/LDF) is all that is added?  This would help a lot during development instead of having to close/open VS to clear the connections
+
+Considered adding address directions and address types into the database to allow adding without having to recompile; but would still have to repackage the app anyway.
+
+Add hint help (or something) so that user knows they can use wildcard in search (%)
+
+
+Issues
+------
+
+[Clear Results] doesn't enable except when there are results; makes clearing an entry that didn't produce results inconvenient; but, placing focus in a field does
+	highlight that field...
+How can I hide the 01/01/0001 dates and display an empty field?
+ 

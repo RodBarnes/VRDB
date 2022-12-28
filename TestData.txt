@@ -1,0 +1,91 @@
+// Use this in place of reading a PDF document for comparing
+// Insert this code in Background_CompareDataDoWork beneath the line
+//  searchList = ExtractContent(lines);
+// and comment out that line.
+
+
+searchList = new List<SearchVM>();
+searchList.Add(new SearchVM()
+{
+    LastName = "Champeau",
+    FirstName = "Kathleen",
+    MiddleName = "Anne",
+    Gender = 'F',
+    BirthDate = "1944-03-31",
+    Address = "333 Lippert Dr W, Apt B212",
+    City = "Port Orchard",
+    State = "WA",
+    Zip = "98366"
+});
+searchList.Add(new SearchVM()
+{
+    LastName = "Raynor",
+    FirstName = "Richard",
+    MiddleName = "David",
+    Gender = 'M',
+    BirthDate = "1967-08-26",
+    Address = "13111 E 10th Ave",
+    City = "Spokane Valley",
+    State = "WA",
+    Zip = "99216"
+});
+searchList.Add(new SearchVM()
+{
+    LastName = "Barnes",
+    FirstName = "Rodney",
+    MiddleName = "Lee",
+    Gender = 'M',
+    BirthDate = "1957-03-03",
+    Address = "122 Dads Lane",
+    City = "Newport",
+    State = "WA",
+    Zip = "99156"
+});
+searchList.Add(new SearchVM()
+{
+    LastName = "Klinger",
+    FirstName = "Chay",
+    MiddleName = "Eric",
+    Gender = 'M',
+    BirthDate = "1972-05-13",
+    Address = "2553 SE Sedgwick Rd, Apt# 1/2",
+    City = "Port Orchard",
+    State = "WA",
+    Zip = "98366"
+});
+searchList.Add(new SearchVM()
+{
+    LastName = "Boyle",
+    FirstName = "Diana",
+    MiddleName = "M",
+    Gender = 'F',
+    BirthDate = "1946-05-08",
+    Address = "502 1/2 S Carnahan Rd",
+    City = "Spokane Valley",
+    State = "WA",
+    Zip = "99212"
+});
+searchList.Add(new SearchVM()
+{
+    LastName = "Du Ell",
+    FirstName = "Marjorie",
+    MiddleName = "J",
+    Gender = 'F',
+    BirthDate = "1927-01-15",
+    Address = "5109 N A ST",
+    City = "Spokane",
+    State = "WA",
+    Zip = "99205"
+});
+searchList.Add(new SearchVM()
+{
+    LastName = "Carpenter",
+    FirstName = "Karen",
+    MiddleName = "",
+    Gender = 'F',
+    BirthDate = "1943-08-06",
+    Address = "10308 NE Rose Point Way",
+    City = "Kingston",
+    State = "WA",
+    Zip = "98346"
+});

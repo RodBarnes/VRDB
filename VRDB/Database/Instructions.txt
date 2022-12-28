@@ -1,0 +1,6 @@
+﻿To add a clean database:
+1. Delete the existing mdf/ldf from the Database folder
+2. Right-click Database folder, select "Add > New Item..."
+3. Select "Visual C# > Data > Service-based Database"
+4. Name it "VRDB"; then click [Add]
+5. Run all the scripts to create the objects.

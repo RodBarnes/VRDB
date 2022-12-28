@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Settings>
+  <AppSettings>
+    <Setting Name="RequestUri" Value="https://www.sos.wa.gov/elections/vrdb/extract-requests.aspx" />
+    <Setting Name="AddressDirectionTokens" Value="N,E,W,S,NW,NE,SW,SE" />
+    <Setting Name="AddressTypeTokens" Value="ST,LN,RD,AVE,BLVD,WAY,CT,LP,DR,WY,TRL,CIR,DRIVE,LANE,ROAD,HIGHWAY" />
+    <Setting Name="HeaderTokens" Value="Full Name,Birth Date,Gender,Address - Street 1,Address - City,Address - State or Province,Address - Postal Code" />
+  </AppSettings>
+  <UserSettings>
+    <!-- Tokens: *Documents, *Common, *Desktop, *Roaming, *Local -->
+    <Default>
+      <Setting Name="UseConditionalFormatting" Value="True" />
+      <Setting Name="ExcludeSame" Value="True" />
+      <Setting Name="ExcludeMissing" Value="False" />
+      <Setting Name="IncludeGender" Value="False" />
+      <Setting Name="IncludeFullFirstName" Value="True" />
+      <Setting Name="IncludeMiddleInitial" Value="False" />
+      <Setting Name="InitialDirectoryCompare" Value="*Documents" />
+      <Setting Name="InitialDirectoryLoad" Value="*Documents" />
+      <Setting Name="InitialDirectoryExport" Value="*Documents" />
+    </Default>
+  </UserSettings>
+</Settings>

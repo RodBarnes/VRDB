@@ -1,0 +1,6 @@
+Click on this link https://www.dropbox.com/sh/tfnvw8awp6f5vn2/AAC01xuqTNl5LmxEk0ynDSJYa?dl=0.
+Move your mouse to the right of the VRDB.zip entry and click on the menu (three dots); then select "Download".  Note into which folder it is downloaded; you will need to know this for installing the program.
+
+It is important that you follow each step in the attached "Installation.pdf".  Bypassing any step can lead to problems in installing and/or using the program.  Support will be limited if you have not followed each step.
+
+If you encounter issues during installation, you should review the information in the "Installation.pdf", "Instructions.pdf", and "FAQ.pdf" found within the archive VRDB.zip before contacting support.
