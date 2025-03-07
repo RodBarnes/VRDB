@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Advanced Applications")]
 [assembly: AssemblyProduct("VRDB")]
-[assembly: AssemblyCopyright("Copyright © 2021,2022")]
+[assembly: AssemblyCopyright("Copyright © 2021-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
