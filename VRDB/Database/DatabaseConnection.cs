@@ -419,12 +419,12 @@ namespace VRDB
                 Mail1 = reader["Mail1"].FromSqlString(),
                 Mail2 = reader["Mail2"].FromSqlString(),
                 Mail3 = reader["Mail3"].FromSqlString(),
-                Mail4 = reader["Mail4"].FromSqlString(),
+                // Mail4 = reader["Mail4"].FromSqlString(), // v2.3.0 - no longer supplied in 2025 extract
                 MailCity = reader["MailCity"].FromSqlString(),
                 MailZip = reader["MailZip"].FromSqlString(),
                 MailState = reader["MailState"].FromSqlString(),
                 MailCountry = reader["MailCountry"].FromSqlString(),
-                AbsenteeType = reader["AbsenteeType"].FromSqlString(),
+                // AbsenteeType = reader["AbsenteeType"].FromSqlString(), // v2.3.0 - no longer supplied in 2025 extract
                 StatusCode = reader["StatusCode"].FromSqlString()
             };
             if (DateTime.TryParse(reader["BirthDate"].ToString(), out DateTime d1))

@@ -1,3 +1,6 @@
+2.3.0
+ - Removed expectation for Mail4 or AbsenteeType as these are no longer supplied in 2025 extract
+
 2.2.3 (unreleased)
  -	Date columns now sort correctly
  -	[Search] button now triggered by <Enter>
