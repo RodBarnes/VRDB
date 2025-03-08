@@ -12,8 +12,9 @@ namespace VRDB
     {
         private readonly SqlConnection sqlConn;
         private readonly int connection_timeout = 60;
-        private readonly int command_timeout = 60;
         private readonly string datasource = "(LocalDB)\\MSSQLLocalDB";
+
+        public int CommandTimeout { get; set; }
 
         public Logger Logger { get; set; }
 
@@ -68,9 +69,9 @@ namespace VRDB
                     using (var cmd = new SqlCommand("spCompareSearch", sqlConn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = this.CommandTimeout;
                         cmd.Parameters.AddWithValue("@lastName", item.LastName.ToSqlString());
                         cmd.Parameters.AddWithValue("@birthDate", item.BirthDate);
-                        cmd.CommandTimeout = command_timeout;
 
                         //if (DateTime.TryParse(item.BirthDate, out DateTime birthdate))
                         //{
@@ -161,6 +162,7 @@ namespace VRDB
                 using (var cmd = new SqlCommand("spSearch", sqlConn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = this.CommandTimeout;
                     cmd.Parameters.AddWithValue("@lastName", lastName.Trim());
                     if (!string.IsNullOrEmpty(firstName))
                     {
@@ -240,6 +242,7 @@ namespace VRDB
                 using (var cmd = new SqlCommand("spRegistrationInsert", sqlConn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = this.CommandTimeout;
                     cmd.Parameters.AddWithValue("@stateVoterID", reg.StateVoterId);
                     cmd.Parameters.AddWithValue("@fname", reg.FName.ToSqlString());
                     cmd.Parameters.AddWithValue("@mname", reg.MName.ToSqlString());
@@ -298,6 +301,7 @@ namespace VRDB
                 using (var cmd = new SqlCommand("spRegistrationRead", sqlConn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = this.CommandTimeout;
                     cmd.Parameters.AddWithValue("@stateVoterID", id);
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -458,9 +462,11 @@ namespace VRDB
 
         #region Administration
 
-        public DatabaseConnection(string path)
+        public DatabaseConnection(string path, int commandTimeout)
         {
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Enter");
+
+            CommandTimeout = commandTimeout;
 
             sqlConn = new SqlConnection($@"Data Source={datasource};AttachDbFilename={path}\VRDB.mdf;Integrated Security=True;Connect Timeout={connection_timeout}");
             sqlConn.Open();

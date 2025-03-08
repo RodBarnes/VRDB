@@ -46,7 +46,13 @@ namespace VRDB.ViewModels
             try
             {
                 AssyInfo = new AssemblyInfo(Assembly.GetExecutingAssembly());
-#if DEBUG
+
+                /* Set DBDEV in the project "Conditional compilation symbols" during database development.
+                 * This will ensure that the database being developeed is used.
+                 * Leave DBDEV unset (not added as a symbol) and the 'else' code will cause it to use a
+                 * the database in the release location.
+                 */
+#if DBDEV
                 ProgramAppPath = Directory.GetCurrentDirectory();
                 UserAppDataPath = ProgramAppPath;
                 dataPath = $@"{UserAppDataPath}\Database";
@@ -72,7 +78,7 @@ namespace VRDB.ViewModels
                 DatabaseManager.AddressDirections = AddressDirectionTokens.Split(',');
                 DatabaseManager.AddressTypes = AddressTypeTokens.Split(',');
                 headerTokens = HeaderTokens.Split(',');
-
+                DatabaseManager.CommandTimeout = CommandTimeout;
             }
             catch (Exception ex)
             {
@@ -184,6 +190,7 @@ namespace VRDB.ViewModels
 
         #region Settings
 
+        public int CommandTimeout { get; private set; }
         public string AddressDirectionTokens { get; private set; }
         public string AddressTypeTokens { get; private set; }
         public string HeaderTokens { get; private set; }

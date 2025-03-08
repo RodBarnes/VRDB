@@ -33,6 +33,7 @@ namespace VRDB
 
         public static string[] AddressDirections { get; set; }
         public static string[] AddressTypes { get; set; }
+        public static int CommandTimeout { get; set; }
 
         #endregion
 
@@ -42,7 +43,7 @@ namespace VRDB
         {
             Logger?.Write(Logger.LogLevel.Trace, $"{typeof(DatabaseManager).Name}.{Utility.GetCurrentMethod()}:Enter");
 
-            using (var db = new DatabaseConnection(DatabasePath))
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
             {
                 if (Logger != null) { db.Logger = Logger; }
                 db.CompareSearch(list, AddressDirections, AddressTypes, bw, bwe);
@@ -62,7 +63,7 @@ namespace VRDB
 
             var list = new List<SearchVM>();
 
-            using (var db = new DatabaseConnection(DatabasePath))
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
             {
                 if (Logger != null) { db.Logger = Logger; }
                 db.Search(lastName, firstName, birthYear, gender, list);
@@ -81,7 +82,7 @@ namespace VRDB
                 throw new Exception("DatabasePath must be set before calling any methods.");
             }
 
-            using (var db = new DatabaseConnection(DatabasePath))
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
             {
                 if (Logger != null) { db.Logger = Logger; }
                 db.RegistrationInsert(item);
@@ -100,7 +101,7 @@ namespace VRDB
             }
 
             var check = false;
-            using (var db = new DatabaseConnection(DatabasePath))
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
             {
                 if (Logger != null) { db.Logger = Logger; }
                 check = db.RegistrationExists(id);
@@ -119,7 +120,7 @@ namespace VRDB
                 throw new Exception("DatabasePath must be set before calling any methods.");
             }
 
-            using (var db = new DatabaseConnection(DatabasePath))
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
             {
                 if (Logger != null) { db.Logger = Logger; }
                 db.StatusUpdate(filename, ticks);
@@ -138,7 +139,7 @@ namespace VRDB
                 throw new Exception("DatabasePath must be set before calling any methods.");
             }
 
-            using (var db = new DatabaseConnection(DatabasePath))
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
             {
                 if (Logger != null) { db.Logger = Logger; }
                 db.StatusRead(status);
@@ -162,7 +163,7 @@ namespace VRDB
             }
 
             var rowCount = 0;
-            using (var db = new DatabaseConnection(DatabasePath))
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
             {
                 if (Logger != null) { db.Logger = Logger; }
                 rowCount = db.RowCount();
@@ -181,7 +182,7 @@ namespace VRDB
                 throw new Exception("DatabasePath must be set before calling any methods.");
             }
 
-            using (var db = new DatabaseConnection(DatabasePath))
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
             {
                 if (Logger != null) { db.Logger = Logger; }
                 db.ClearData();
