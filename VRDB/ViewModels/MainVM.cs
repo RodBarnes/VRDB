@@ -1049,7 +1049,7 @@ namespace VRDB.ViewModels
             var missingCnt = SearchResults.Count(s => s.Compare == Constants.LabelMissing);
             var sameCnt = SearchResults.Count(s => s.Compare == Constants.LabelSame);
             var diffCnt = SearchResults.Count(s => s.Compare == Constants.LabelDifferent);
-            OperationStatus = $"Compared {Utility.FormatWithComma(SearchResults.Count)} member entries from report \"{filename}\" " +
+            OperationStatus = $"Compared {Utility.FormatWithComma(SearchResults.Count)} member entries from report \"{filename}\"" +
                 $" in {Utility.TimeString(span.Ticks)}\n" +
                 $"{Constants.LabelMissing}: {missingCnt}\n" +
                 $"{Constants.LabelSame}: {sameCnt}\n" +
