@@ -52,14 +52,14 @@ namespace VRDB.ViewModels
                 dataPath = $@"{UserAppDataPath}\Database";
                 docFilePath = $@"D:\Source\BitBucket\{AssyInfo.Product}";
 #else
-                //var productPath = $@"{AssyInfo.Company}\{AssyInfo.Product}";
-                //var codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                //var uri = new UriBuilder(codeBase);
-                //var assyPath = Uri.UnescapeDataString(uri.Path);
-                //ProgramAppPath = Path.GetDirectoryName(assyPath);
-                //UserAppDataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{productPath}";
-                //dataPath = UserAppDataPath;
-                //docFilePath = ProgramAppPath;
+                var productPath = $@"{AssyInfo.Company}\{AssyInfo.Product}";
+                var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                var uri = new UriBuilder(codeBase);
+                var assyPath = Uri.UnescapeDataString(uri.Path);
+                ProgramAppPath = Path.GetDirectoryName(assyPath);
+                UserAppDataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{productPath}";
+                dataPath = UserAppDataPath;
+                docFilePath = ProgramAppPath;
 #endif
                 SettingsFilePath = $@"{ProgramAppPath}\Settings.xml";
                 DatabaseManager.DatabasePath = dataPath;
