@@ -1,5 +1,6 @@
 2.3.0
  - Removed expectation for Mail4 or AbsenteeType as these are no longer supplied in 2025 extract
+ - Increase SQL command timeout from default 30 to 60 seconds.
 
 2.2.3 (unreleased)
  -	Date columns now sort correctly
