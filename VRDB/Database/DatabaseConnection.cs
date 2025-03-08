@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing.Printing;
 using VRDB.Models;
 
 namespace VRDB
@@ -11,7 +12,9 @@ namespace VRDB
     public class DatabaseConnection : IDisposable
     {
         private readonly SqlConnection sqlConn;
-        private readonly int timeout = 60;
+        private readonly int connection_timeout = 60;
+        private readonly int command_timeout = 60;
+        private readonly string datasource = "(LocalDB)\\MSSQLLocalDB";
 
         public Logger Logger { get; set; }
 
@@ -53,10 +56,13 @@ namespace VRDB
             try
             {
                 var args = (WorkerArgs)bwe.Argument;
-                var includeGender = (args.Level & 1) == 1 ? true : false;
-                var includeFullFirstName = (args.Level & 2) == 2 ? true : false;
-                var includeMiddleInitial = (args.Level & 4) == 4 ? true : false;
+                var includeGender = (args.CompareLevel & 1) == 1 ? true : false;
+                var includeFullFirstName = (args.CompareLevel & 2) == 2 ? true : false;
+                var includeMiddleInitial = (args.CompareLevel & 4) == 4 ? true : false;
 
+                /* Compare each entry from the report against the records in the database
+                 * executing the query once for each entry on the report
+                 */
                 for (int i = 0; i < list.Count; i++)
                 {
                     var item = list[i];
@@ -65,6 +71,8 @@ namespace VRDB
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@lastName", item.LastName.ToSqlString());
                         cmd.Parameters.AddWithValue("@birthDate", item.BirthDate);
+                        cmd.CommandTimeout = command_timeout;
+
                         //if (DateTime.TryParse(item.BirthDate, out DateTime birthdate))
                         //{
                         //    cmd.Parameters.AddWithValue("@birthDate", birthdate);
@@ -454,15 +462,8 @@ namespace VRDB
         public DatabaseConnection(string path)
         {
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Enter");
-#if DEBUG
-            // Use DB from user
-            sqlConn = new SqlConnection($@"Data Source=(LocalDB)\ProjectsV13;AttachDbFilename=C:\USERS\RODBA\APPDATA\ROAMING\ADVANCED APPLICATIONS\VRDB\VRDB.mdf;Integrated Security = True;Connect Timeout={timeout}");
 
-            // Use DB from Debug
-            //sqlConn = new SqlConnection($@"Data Source=(LocalDB)\ProjectsV13;AttachDbFilename={path}\VRDB.mdf;Integrated Security = True;Connect Timeout={timeout}");
-#else
-            sqlConn = new SqlConnection($@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={path}\VRDB.mdf;Integrated Security = True;Connect Timeout={timeout}");
-#endif
+            sqlConn = new SqlConnection($@"Data Source={datasource};AttachDbFilename={path}\VRDB.mdf;Integrated Security=True;Connect Timeout={connection_timeout}");
             sqlConn.Open();
 
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Leave");
