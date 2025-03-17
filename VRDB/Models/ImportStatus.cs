@@ -33,7 +33,7 @@ namespace VRDB.Models
             }
             else
             {
-                msg = $"Status: Empty";
+                msg = $"Status: Empty\n";
             }
 
             return msg;
