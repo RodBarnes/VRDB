@@ -18,8 +18,8 @@ namespace VRDB.Models
             string msg;
             if (!string.IsNullOrEmpty(ImportFilename))
             {
-                msg = $"Loaded: {Utility.FormatWithComma(DatabaseManager.RowCount)} rows from {ImportFilename}\n" +
-                    $"Date: {ImportDateTime.ToShortDateString()} ({TimeString()})\n";
+                msg = $"Loaded: {Utility.FormatWithComma(DatabaseManager.RowCount)} rows from \"{ImportFilename}\" in {Utility.TimeString(TimeSpanTicks)}\n" +
+                    $"Date: {ImportDateTime.ToShortDateString()}\n";
 
                 if (ImportRejects.Count > 0)
                 {
@@ -33,37 +33,7 @@ namespace VRDB.Models
             }
             else
             {
-                msg = $"Status: Empty";
-            }
-
-            return msg;
-        }
-
-        public string TimeString()
-        {
-            string msg;
-
-            if (TimeSpanTicks > 0)
-            {
-                var span = TimeSpan.FromTicks(TimeSpanTicks);
-                msg = string.Format("{0:D2}.{1:D3}s", span.Seconds, span.Milliseconds);
-                if (span.Minutes > 0)
-                {
-                    msg = $"{string.Format("{0:D2}m", span.Minutes)} {msg}";
-                }
-                if (span.Hours > 0)
-                {
-                    msg = $"{string.Format("{0:D2}h", span.Hours)} {msg}";
-                }
-                //msg = string.Format("{0:D2}h {1:D2}m {2:D2}.{3:D3}s",
-                //                span.Hours,
-                //                span.Minutes,
-                //                span.Seconds,
-                //                span.Milliseconds);
-            }
-            else
-            {
-                msg = "0";
+                msg = $"Status: Empty\n";
             }
 
             return msg;

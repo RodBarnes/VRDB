@@ -11,7 +11,10 @@ namespace VRDB
     public class DatabaseConnection : IDisposable
     {
         private readonly SqlConnection sqlConn;
-        private readonly int timeout = 60;
+        private readonly int connection_timeout = 60;
+        private readonly string datasource = "(LocalDB)\\MSSQLLocalDB";
+
+        public int CommandTimeout { get; set; }
 
         public Logger Logger { get; set; }
 
@@ -53,18 +56,23 @@ namespace VRDB
             try
             {
                 var args = (WorkerArgs)bwe.Argument;
-                var includeGender = (args.Level & 1) == 1 ? true : false;
-                var includeFullFirstName = (args.Level & 2) == 2 ? true : false;
-                var includeMiddleInitial = (args.Level & 4) == 4 ? true : false;
+                var includeGender = (args.CompareLevel & 1) == 1 ? true : false;
+                var includeFullFirstName = (args.CompareLevel & 2) == 2 ? true : false;
+                var includeMiddleInitial = (args.CompareLevel & 4) == 4 ? true : false;
 
+                /* Compare each entry from the report against the records in the database
+                 * executing the query once for each entry on the report
+                 */
                 for (int i = 0; i < list.Count; i++)
                 {
                     var item = list[i];
                     using (var cmd = new SqlCommand("spCompareSearch", sqlConn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = this.CommandTimeout;
                         cmd.Parameters.AddWithValue("@lastName", item.LastName.ToSqlString());
                         cmd.Parameters.AddWithValue("@birthDate", item.BirthDate);
+
                         //if (DateTime.TryParse(item.BirthDate, out DateTime birthdate))
                         //{
                         //    cmd.Parameters.AddWithValue("@birthDate", birthdate);
@@ -154,6 +162,7 @@ namespace VRDB
                 using (var cmd = new SqlCommand("spSearch", sqlConn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = this.CommandTimeout;
                     cmd.Parameters.AddWithValue("@lastName", lastName.Trim());
                     if (!string.IsNullOrEmpty(firstName))
                     {
@@ -233,6 +242,7 @@ namespace VRDB
                 using (var cmd = new SqlCommand("spRegistrationInsert", sqlConn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = this.CommandTimeout;
                     cmd.Parameters.AddWithValue("@stateVoterID", reg.StateVoterId);
                     cmd.Parameters.AddWithValue("@fname", reg.FName.ToSqlString());
                     cmd.Parameters.AddWithValue("@mname", reg.MName.ToSqlString());
@@ -291,6 +301,7 @@ namespace VRDB
                 using (var cmd = new SqlCommand("spRegistrationRead", sqlConn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = this.CommandTimeout;
                     cmd.Parameters.AddWithValue("@stateVoterID", id);
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -386,6 +397,30 @@ namespace VRDB
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Leave");
         }
 
+        public string GetVersionInfo()
+        {
+            Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Enter");
+
+            var info = "";
+            try
+            {
+                using (var cmd = new SqlCommand("select @@VERSION", sqlConn))
+                {
+                    // Get the version info
+                    cmd.CommandType = CommandType.Text;
+                    info = cmd.ExecuteScalar().ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Exception {ex.Message}");
+                throw new Exception($"{nameof(StatusRead)} failed.", ex);
+            }
+
+            Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Leave");
+            return info;
+        }
+
 
         #endregion
 
@@ -419,12 +454,12 @@ namespace VRDB
                 Mail1 = reader["Mail1"].FromSqlString(),
                 Mail2 = reader["Mail2"].FromSqlString(),
                 Mail3 = reader["Mail3"].FromSqlString(),
-                Mail4 = reader["Mail4"].FromSqlString(),
+                // Mail4 = reader["Mail4"].FromSqlString(), // v2.3.0 - no longer supplied in 2025 extract
                 MailCity = reader["MailCity"].FromSqlString(),
                 MailZip = reader["MailZip"].FromSqlString(),
                 MailState = reader["MailState"].FromSqlString(),
                 MailCountry = reader["MailCountry"].FromSqlString(),
-                AbsenteeType = reader["AbsenteeType"].FromSqlString(),
+                // AbsenteeType = reader["AbsenteeType"].FromSqlString(), // v2.3.0 - no longer supplied in 2025 extract
                 StatusCode = reader["StatusCode"].FromSqlString()
             };
             if (DateTime.TryParse(reader["BirthDate"].ToString(), out DateTime d1))
@@ -451,18 +486,13 @@ namespace VRDB
 
         #region Administration
 
-        public DatabaseConnection(string path)
+        public DatabaseConnection(string path, int commandTimeout)
         {
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Enter");
-#if DEBUG
-            // Use DB from user
-            sqlConn = new SqlConnection($@"Data Source=(LocalDB)\ProjectsV13;AttachDbFilename=C:\USERS\RODBA\APPDATA\ROAMING\ADVANCED APPLICATIONS\VRDB\VRDB.mdf;Integrated Security = True;Connect Timeout={timeout}");
 
-            // Use DB from Debug
-            //sqlConn = new SqlConnection($@"Data Source=(LocalDB)\ProjectsV13;AttachDbFilename={path}\VRDB.mdf;Integrated Security = True;Connect Timeout={timeout}");
-#else
-            sqlConn = new SqlConnection($@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={path}\VRDB.mdf;Integrated Security = True;Connect Timeout={timeout}");
-#endif
+            CommandTimeout = commandTimeout;
+
+            sqlConn = new SqlConnection($@"Data Source={datasource};AttachDbFilename={path}\VRDB.mdf;Integrated Security=True;Connect Timeout={connection_timeout}");
             sqlConn.Open();
 
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Leave");

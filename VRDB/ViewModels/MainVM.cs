@@ -24,8 +24,8 @@ namespace VRDB.ViewModels
         private static MainWindow window;
         private static BackgroundWorker worker;
         private static string dataPath;
-        private static string importFilename;
-        private static DateTime importStartTime;
+        private static string filename;
+        private static DateTime startTime;
         private ImportStatus importStatus = new ImportStatus();
         private static Logger Logger;
         private static List<SearchVM> searchList;
@@ -46,7 +46,13 @@ namespace VRDB.ViewModels
             try
             {
                 AssyInfo = new AssemblyInfo(Assembly.GetExecutingAssembly());
-#if DEBUG
+
+                /* Set DBDEV in the project "Conditional compilation symbols" during database development.
+                 * This will ensure that the database being developeed is used.
+                 * Leave DBDEV unset (not added as a symbol) and the 'else' code will cause it to use a
+                 * the database in the release location.
+                 */
+#if DBDEV
                 ProgramAppPath = Directory.GetCurrentDirectory();
                 UserAppDataPath = ProgramAppPath;
                 dataPath = $@"{UserAppDataPath}\Database";
@@ -61,7 +67,7 @@ namespace VRDB.ViewModels
                 dataPath = UserAppDataPath;
                 docFilePath = ProgramAppPath;
 #endif
-                SettingsFilePath = $@"{UserAppDataPath}\Settings.xml";
+                SettingsFilePath = $@"{ProgramAppPath}\Settings.xml";
                 DatabaseManager.DatabasePath = dataPath;
 
                 InitAboutPanel();
@@ -72,7 +78,7 @@ namespace VRDB.ViewModels
                 DatabaseManager.AddressDirections = AddressDirectionTokens.Split(',');
                 DatabaseManager.AddressTypes = AddressTypeTokens.Split(',');
                 headerTokens = HeaderTokens.Split(',');
-
+                DatabaseManager.CommandTimeout = CommandTimeout;
             }
             catch (Exception ex)
             {
@@ -184,6 +190,7 @@ namespace VRDB.ViewModels
 
         #region Settings
 
+        public int CommandTimeout { get; private set; }
         public string AddressDirectionTokens { get; private set; }
         public string AddressTypeTokens { get; private set; }
         public string HeaderTokens { get; private set; }
@@ -432,6 +439,16 @@ namespace VRDB.ViewModels
                 $"Voter Registration Database.\n" +
                 $"{AssyInfo.Copyright} {AssyInfo.Company}. Apace 2.0 Licensed."
             };
+
+            // Uncomment these lines to display the datbase version info in the about window
+            //if (true)
+            //{
+            //    AboutProperties.Description += "\n\n" +
+            //        $"ProgramAppPath={ProgramAppPath}\n" +
+            //        $"UserAppDataPath={UserAppDataPath}\n" +
+            //        $"dataPath={dataPath}\n" +
+            //        $"docFilePath={docFilePath}";
+            //}
         }
 
         private void InitMainPanel()
@@ -520,7 +537,7 @@ namespace VRDB.ViewModels
             // Confirm whether to proceed
             currentMessageAction = MessageAction.ClearDatabase;
             window.MessagePanel.Show("Database contains data!", $"There are {Utility.FormatWithComma(DatabaseManager.RowCount)} rows in the database. " +
-                $" If you proceed the data will have to be loaded before performing any search.  The last import took {importStatus.TimeString()}.",
+                $" If you proceed the data will have to be loaded before performing any search.  The last import took {Utility.TimeString(importStatus.TimeSpanTicks)}.",
                 "Are you SURE you want to reload the data?", MessagePanel.MessageType.YesNo);
         }
 
@@ -690,7 +707,7 @@ namespace VRDB.ViewModels
             {
                 FileName = inFile,
                 MaxProgressValue = BusyProgressMaximum,
-                Level = GetCompareLevel()
+                CompareLevel = GetCompareLevel()
             };
 
             worker = new BackgroundWorker
@@ -872,8 +889,8 @@ namespace VRDB.ViewModels
             Logger?.Write(Logger.LogLevel.Trace, $"{typeof(MainVM).Name}.{Utility.GetCurrentMethod()}:Enter");
 
             var args = (WorkerArgs)e.Argument;
-            importFilename = Path.GetFileName(args.FileName);
-            importStartTime = DateTime.Now;
+            filename = Path.GetFileName(args.FileName);
+            startTime = DateTime.Now;
 
             ShowBusyPanel("Importing data...");
 
@@ -963,9 +980,9 @@ namespace VRDB.ViewModels
                 return;
             }
 
-            var span = DateTime.Now - importStartTime;
+            var span = DateTime.Now - startTime;
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(MainVM).Name}.{Utility.GetCurrentMethod()}:StatusUpdate");
-            DatabaseManager.StatusUpdate(importFilename, span.Ticks);
+            DatabaseManager.StatusUpdate(filename, span.Ticks);
 
             UpdateButtonStatus();
             UpdateStatusMessage();
@@ -979,6 +996,8 @@ namespace VRDB.ViewModels
             Logger?.Write(Logger.LogLevel.Trace, $"{typeof(MainVM).Name}.{Utility.GetCurrentMethod()}:Enter");
 
             var args = (WorkerArgs)e.Argument;
+            filename = Path.GetFileName(args.FileName);
+            startTime = DateTime.Now;
 
             try
             {
@@ -1040,14 +1059,15 @@ namespace VRDB.ViewModels
                 return;
             }
 
-            var span = DateTime.Now - importStartTime;
+            var span = DateTime.Now - startTime;
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(MainVM).Name}.{Utility.GetCurrentMethod()}:SearchResults");
 
             SearchResults = new ObservableCollection<SearchVM>(searchList);
             var missingCnt = SearchResults.Count(s => s.Compare == Constants.LabelMissing);
             var sameCnt = SearchResults.Count(s => s.Compare == Constants.LabelSame);
             var diffCnt = SearchResults.Count(s => s.Compare == Constants.LabelDifferent);
-            OperationStatus = $"Compared {Utility.FormatWithComma(SearchResults.Count)} member entries from report.\n" +
+            OperationStatus = $"Compared {Utility.FormatWithComma(SearchResults.Count)} member entries from report \"{filename}\"" +
+                $" in {Utility.TimeString(span.Ticks)}\n" +
                 $"{Constants.LabelMissing}: {missingCnt}\n" +
                 $"{Constants.LabelSame}: {sameCnt}\n" +
                 $"{Constants.LabelDifferent}: {diffCnt}";

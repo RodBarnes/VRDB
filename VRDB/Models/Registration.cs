@@ -87,21 +87,27 @@ namespace VRDB.Models
             Mail1 = cols[23];
             Mail2 = cols[24];
             Mail3 = cols[25];
-            Mail4 = cols[26];
-            MailCity = cols[27];
-            MailZip = cols[28];
-            MailState = cols[29];
-            MailCountry = cols[30];
-            if (!DateTime.TryParse(cols[31], out RegistrationDate))
+            /* v2.3.0
+             * Mail4 and AbsenteeType are not provided in extracts for 2025
+             * Setting those columns to null rather (instead of a value from the extract)
+             * and reordering the following properties' column positions to
+             * accomodate that these columns are missing in the extract
+             */
+            Mail4 = null;
+            MailCity = cols[26];
+            MailZip = cols[27];
+            MailState = cols[28];
+            MailCountry = cols[29];
+            if (!DateTime.TryParse(cols[30], out RegistrationDate))
             {
                 RegistrationDate = new DateTime();
             }
-            AbsenteeType = cols[32];
-            if (!DateTime.TryParse(cols[33], out LastVoted))
+            AbsenteeType = null;
+            if (!DateTime.TryParse(cols[31], out LastVoted))
             {
                 LastVoted = new DateTime();
             }
-            StatusCode = cols[34];
+            StatusCode = cols[32];
         }
 
         public override string ToString()
