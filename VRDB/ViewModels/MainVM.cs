@@ -439,6 +439,16 @@ namespace VRDB.ViewModels
                 $"Voter Registration Database.\n" +
                 $"{AssyInfo.Copyright} {AssyInfo.Company}. Apace 2.0 Licensed."
             };
+
+            // Uncomment these lines to display the datbase version info in the about window
+            //if (true)
+            //{
+            //    AboutProperties.Description += "\n\n" +
+            //        $"ProgramAppPath={ProgramAppPath}\n" +
+            //        $"UserAppDataPath={UserAppDataPath}\n" +
+            //        $"dataPath={dataPath}\n" +
+            //        $"docFilePath={docFilePath}";
+            //}
         }
 
         private void InitMainPanel()

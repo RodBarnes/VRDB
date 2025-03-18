@@ -397,6 +397,30 @@ namespace VRDB
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Leave");
         }
 
+        public string GetVersionInfo()
+        {
+            Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Enter");
+
+            var info = "";
+            try
+            {
+                using (var cmd = new SqlCommand("select @@VERSION", sqlConn))
+                {
+                    // Get the version info
+                    cmd.CommandType = CommandType.Text;
+                    info = cmd.ExecuteScalar().ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Exception {ex.Message}");
+                throw new Exception($"{nameof(StatusRead)} failed.", ex);
+            }
+
+            Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Leave");
+            return info;
+        }
+
 
         #endregion
 

@@ -149,6 +149,27 @@ namespace VRDB
             Logger?.Write(Logger.LogLevel.Trace, $"{typeof(DatabaseManager).Name}.{Utility.GetCurrentMethod()}:Leave");
         }
 
+        public static string GetVersionInfo()
+        {
+            Logger?.Write(Logger.LogLevel.Trace, $"{typeof(DatabaseManager).Name}.{Utility.GetCurrentMethod()}:Enter");
+
+            var info = "";
+
+            if (string.IsNullOrEmpty(DatabasePath))
+            {
+                throw new Exception("DatabasePath must be set before calling any methods.");
+            }
+
+            using (var db = new DatabaseConnection(DatabasePath, CommandTimeout))
+            {
+                if (Logger != null) { db.Logger = Logger; }
+                info = db.GetVersionInfo();
+            }
+
+            Logger?.Write(Logger.LogLevel.Trace, $"{typeof(DatabaseManager).Name}.{Utility.GetCurrentMethod()}:Leave");
+            return info;
+        }
+
         #endregion
 
         #region Administration
