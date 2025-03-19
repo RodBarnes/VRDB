@@ -492,7 +492,10 @@ namespace VRDB
 
             CommandTimeout = commandTimeout;
 
-            sqlConn = new SqlConnection($@"Data Source={datasource};AttachDbFilename={path}\VRDB.mdf;Integrated Security=True;Connect Timeout={connection_timeout}");
+            sqlConn = new SqlConnection($@"Data Source={datasource};
+                                        AttachDbFilename={path}\VRDB.mdf;
+                                        Integrated Security=True;
+                                        Connect Timeout={connection_timeout}");
             sqlConn.Open();
 
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Leave");
