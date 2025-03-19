@@ -73,7 +73,7 @@ namespace VRDB.ViewModels
 
 #if DEBUG
 #else
-//                FixRegistryDataPath(dataPath);
+                FixRegistryDataPath(dataPath);
 #endif
                 InitAboutPanel();
                 InitBusyPanel(10000);
