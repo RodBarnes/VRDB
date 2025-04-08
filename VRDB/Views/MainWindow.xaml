@@ -129,7 +129,7 @@
                     <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}" />
                     <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}" />
                     <DataGridTextColumn Header="Middle Name" Binding="{Binding MiddleName}" />
-                    <DataGridTextColumn Header="BirthDate" Binding="{Binding BirthDate, StringFormat=d}" />
+                    <DataGridTextColumn Header="BirthYear" Binding="{Binding BirthYear, StringFormat=d}" />
                     <DataGridTextColumn Header="Gender" Binding="{Binding Gender}" />
                     <DataGridTextColumn Header="Address" Binding="{Binding Address}" />
                     <DataGridTextColumn Header="City" Binding="{Binding City}" />
