@@ -58,7 +58,7 @@ namespace VRDB.Models
             if (!DateTime.TryParse(cols[5], out BirthDate))
             {
                 // If it isn't a full date, try parsing just for the year value.
-                // As of 2025, the extract now only contains the birth year not the birth date
+                // As of 2025, the extract now only contains the birth year not the birth date.
                 if (!DateTime.TryParseExact(cols[5], "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out BirthDate))
                 {
                     BirthDate = new DateTime();
