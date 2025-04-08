@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[spCompareSearch]
 (
 	@lastName NVARCHAR(50),
-	@birthDate DATETIME2(7) = NULL,
+	@birthYear INT = NULL,
 	@gender NVARCHAR(1) = NULL,
 	@firstName NVARCHAR(50) = NULL,
 	@middleName NVARCHAR(50) = NULL
@@ -29,7 +29,7 @@ AS
 		r.StatusCode
 	FROM Registration r
 	WHERE r.LName = @lastName
-	  AND (@birthDate IS NULL OR r.BirthDate = @birthDate)
+	  AND (@birthYear IS NULL OR r.BirthYear = @birthYear)
 	  AND (@gender IS NULL OR (r.Gender = @gender))
 	  AND ((LEN(@firstName) > 1 AND (r.FName = @firstName)) OR (SUBSTRING(r.FName,1,1) = SUBSTRING(@firstName,1,1)))
 	  AND (@middleName IS NULL OR (SUBSTRING(r.MName,1,1) = SUBSTRING(@middleName,1,1)))

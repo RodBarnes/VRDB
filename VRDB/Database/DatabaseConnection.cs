@@ -71,7 +71,7 @@ namespace VRDB
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = this.CommandTimeout;
                         cmd.Parameters.AddWithValue("@lastName", item.LastName.ToSqlString());
-                        cmd.Parameters.AddWithValue("@birthDate", item.BirthDate);
+                        cmd.Parameters.AddWithValue("@birthYear", item.BirthYear);
 
                         //if (DateTime.TryParse(item.BirthDate, out DateTime birthdate))
                         //{
