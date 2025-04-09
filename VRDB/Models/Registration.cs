@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace VRDB.Models
 {
@@ -56,7 +57,11 @@ namespace VRDB.Models
             NameSuffix = cols[4];
             if (!DateTime.TryParse(cols[5], out BirthDate))
             {
-                BirthDate = new DateTime();
+                // If it isn't a full date, try parsing just for the year value.
+                if (!DateTime.TryParseExact(cols[5], "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out BirthDate))
+                {
+                    BirthDate = new DateTime();
+                }
             }
             if (!char.TryParse(cols[6], out Gender))
             {
