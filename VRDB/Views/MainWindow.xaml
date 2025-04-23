@@ -36,6 +36,9 @@
                             <MenuItem Header="Full First Name" IsCheckable="True" IsChecked="{Binding IncludeFullFirstName}" StaysOpenOnClick="True" />
                             <MenuItem Header="Gender" IsCheckable="True" IsChecked="{Binding IncludeGender}" StaysOpenOnClick="True" />
                             <MenuItem Header="Middle Initial" IsCheckable="True" IsChecked="{Binding IncludeMiddleInitial}" StaysOpenOnClick="True" />
+                            <MenuItem Header="Street Name" IsCheckable="True" IsChecked="{Binding IncludeStreetName}" StaysOpenOnClick="True" />
+                            <MenuItem Header="Street Number" IsCheckable="True" IsChecked="{Binding IncludeStreetNumber}" StaysOpenOnClick="True" />
+                            <MenuItem Header="Street Type" IsCheckable="True" IsChecked="{Binding IncludeStreetType}" StaysOpenOnClick="True" />
                         </MenuItem>
                         <MenuItem Header="Export" >
                             <MenuItem Header="Conditional Formatting" IsCheckable="True" IsChecked="{Binding UseConditionalFormatting}" StaysOpenOnClick="True" />

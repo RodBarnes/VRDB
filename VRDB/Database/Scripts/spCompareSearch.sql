@@ -34,7 +34,7 @@ AS
 	WHERE r.LName = @lastName
 	  AND (@birthYear IS NULL OR r.BirthYear = @birthYear)
 	  AND (@gender IS NULL OR (r.Gender = @gender))
-	  AND ((LEN(@firstName) > 1 AND (r.FName = @firstName)) OR (SUBSTRING(r.FName,1,1) = SUBSTRING(@firstName,1,1)))
+      AND ((LEN(@firstName) = 1 AND SUBSTRING(r.FName,1,1) = @firstName) OR (LEN(@firstName) > 1 AND r.FName = @firstName))
 	  AND (@middleName IS NULL OR (SUBSTRING(r.MName,1,1) = SUBSTRING(@middleName,1,1)))
 	  AND (@streetName IS NULL OR (r.RegStName LIKE @streetName))
 	  AND (@streetNumber IS NULL OR (r.RegStNum LIKE @streetNumber))

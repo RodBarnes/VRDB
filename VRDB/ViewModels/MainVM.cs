@@ -272,6 +272,39 @@ namespace VRDB.ViewModels
             }
         }
 
+        private bool includeStreetName = false;
+        public string IncludeStreetName
+        {
+            get => includeStreetName ? "True" : "False";
+            set
+            {
+                includeStreetName = (value == "True");
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool includeStreetNumber = false;
+        public string IncludeStreetNumber
+        {
+            get => includeStreetNumber ? "True" : "False";
+            set
+            {
+                includeStreetNumber = (value == "True");
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool includeStreetType = false;
+        public string IncludeStreetType
+        {
+            get => includeStreetType ? "True" : "False";
+            set
+            {
+                includeStreetType = (value == "True");
+                NotifyPropertyChanged();
+            }
+        }
+
         public string InitialDirectoryLoad { get; set; }
         public string InitialDirectoryCompare { get; set; }
         public string InitialDirectoryExport { get; set; }
@@ -737,6 +770,9 @@ namespace VRDB.ViewModels
             rtn += includeGender ? 1 : 0;
             rtn += includeFullFirstName ? 2 : 0;
             rtn += includeMiddleInitial ? 4 : 0;
+            rtn += includeStreetName ? 8 : 0;
+            rtn += includeStreetNumber ? 16 : 0;
+            rtn += includeStreetType ? 32 : 0;
 
             return rtn;
         }

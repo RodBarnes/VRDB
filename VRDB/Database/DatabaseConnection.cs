@@ -59,6 +59,9 @@ namespace VRDB
                 var includeGender = (args.CompareLevel & 1) == 1 ? true : false;
                 var includeFullFirstName = (args.CompareLevel & 2) == 2 ? true : false;
                 var includeMiddleInitial = (args.CompareLevel & 4) == 4 ? true : false;
+                var includeStreetName = (args.CompareLevel & 8) == 8 ? true : false;
+                var includeStreetNumber = (args.CompareLevel & 16) == 16 ? true : false;
+                var includeStreetType = (args.CompareLevel & 32) == 32 ? true : false;
 
                 /* Compare each entry from the report against the records in the database
                  * executing the query once for each entry on the report
@@ -72,12 +75,6 @@ namespace VRDB
                         cmd.CommandTimeout = this.CommandTimeout;
                         cmd.Parameters.AddWithValue("@lastName", item.LastName.ToSqlString());
                         cmd.Parameters.AddWithValue("@birthYear", item.BirthYear);
-
-                        // FIX: 2.3.2
-                        var mbrAddress = new Address(item.Address, addrDirections, addrTypes);
-                        cmd.Parameters.AddWithValue("@streetName", mbrAddress.Name);
-                        cmd.Parameters.AddWithValue("@streetNumber", mbrAddress.Number);
-                        cmd.Parameters.AddWithValue("@streetType", mbrAddress.Type);
 
                         //if (DateTime.TryParse(item.BirthDate, out DateTime birthdate))
                         //{
@@ -98,6 +95,21 @@ namespace VRDB
                         if (includeMiddleInitial)
                         {
                             cmd.Parameters.AddWithValue("@middleName", item.MiddleName.ToSqlString());
+                        }
+
+                        // FIX: 2.3.2
+                        var mbrAddress = new Address(item.Address, addrDirections, addrTypes);
+                        if (includeStreetName)
+                        {
+                            cmd.Parameters.AddWithValue("@streetName", mbrAddress.Name);
+                        }
+                        if (includeStreetNumber)
+                        {
+                            cmd.Parameters.AddWithValue("@streetNumber", mbrAddress.Number);
+                        }
+                        if (includeStreetType)
+                        {
+                            cmd.Parameters.AddWithValue("@streetType", mbrAddress.Type);
                         }
 
                         using (var reader = cmd.ExecuteReader())
