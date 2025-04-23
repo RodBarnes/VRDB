@@ -3,6 +3,10 @@ https://www.sos.wa.gov/elections/vrdb/extract-requests.aspx
 
 Using PDFPig to process the PDF contents https://github.com/UglyToad/PdfPig
 
+Producing the Release
+---------------------
+Check the notes in Joplin regarding "Setup Project - Version".  This covers what has to happen for upgrades to go smoothly.
+
 
 Deploying
 ---------
