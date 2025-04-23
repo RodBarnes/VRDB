@@ -1,3 +1,7 @@
+2.4.0 (4/23/2025)
+ - Upgraded version in Setup project and all documents. Updated instructions to include references to new
+   comparison options.
+
 2.3.2 (4/22/2025)
  - Fixed defect in Comparion search.  It was not being specific enough and the previous search was returning
    incorrect result sets; i.e., too many results.
