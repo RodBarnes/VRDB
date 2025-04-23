@@ -59,6 +59,9 @@ namespace VRDB
                 var includeGender = (args.CompareLevel & 1) == 1 ? true : false;
                 var includeFullFirstName = (args.CompareLevel & 2) == 2 ? true : false;
                 var includeMiddleInitial = (args.CompareLevel & 4) == 4 ? true : false;
+                var includeStreetName = (args.CompareLevel & 8) == 8 ? true : false;
+                var includeStreetNumber = (args.CompareLevel & 16) == 16 ? true : false;
+                var includeStreetType = (args.CompareLevel & 32) == 32 ? true : false;
 
                 /* Compare each entry from the report against the records in the database
                  * executing the query once for each entry on the report
@@ -71,7 +74,7 @@ namespace VRDB
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = this.CommandTimeout;
                         cmd.Parameters.AddWithValue("@lastName", item.LastName.ToSqlString());
-                        cmd.Parameters.AddWithValue("@birthDate", item.BirthDate);
+                        cmd.Parameters.AddWithValue("@birthYear", item.BirthYear);
 
                         //if (DateTime.TryParse(item.BirthDate, out DateTime birthdate))
                         //{
@@ -94,6 +97,21 @@ namespace VRDB
                             cmd.Parameters.AddWithValue("@middleName", item.MiddleName.ToSqlString());
                         }
 
+                        // FIX: 2.3.2
+                        var mbrAddress = new Address(item.Address, addrDirections, addrTypes);
+                        if (includeStreetName)
+                        {
+                            cmd.Parameters.AddWithValue("@streetName", mbrAddress.Name);
+                        }
+                        if (includeStreetNumber)
+                        {
+                            cmd.Parameters.AddWithValue("@streetNumber", mbrAddress.Number);
+                        }
+                        if (includeStreetType)
+                        {
+                            cmd.Parameters.AddWithValue("@streetType", mbrAddress.Type);
+                        }
+
                         using (var reader = cmd.ExecuteReader())
                         {
                             if (reader != null)
@@ -101,7 +119,6 @@ namespace VRDB
                                 item.Compare = Constants.LabelMissing;
                                 while (reader.Read())
                                 {
-                                    var mbrAddress = new Address(item.Address, addrDirections, addrTypes);
                                     var mbrCity = item.City;
                                     var mbrState = item.State;
                                     var mbrZip = item.Zip;
@@ -492,7 +509,10 @@ namespace VRDB
 
             CommandTimeout = commandTimeout;
 
-            sqlConn = new SqlConnection($@"Data Source={datasource};AttachDbFilename={path}\VRDB.mdf;Integrated Security=True;Connect Timeout={connection_timeout}");
+            sqlConn = new SqlConnection($@"Data Source={datasource};
+                                        AttachDbFilename={path}\VRDB.mdf;
+                                        Integrated Security=True;
+                                        Connect Timeout={connection_timeout}");
             sqlConn.Open();
 
             Logger?.Write(Logger.LogLevel.Debug, $"{typeof(DatabaseConnection).Name}.{Utility.GetCurrentMethod()}:Leave");

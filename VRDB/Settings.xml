@@ -10,15 +10,15 @@
     <!-- Tokens: *Documents, *Common, *Desktop, *Roaming, *Local -->
     <Default>
       <Setting Name="CommandTimeout" Value="60" Type="int"/>
-      <Setting Name="UseConditionalFormatting" Value="True" Type="boolean" />
-      <Setting Name="ExcludeSame" Value="True" Type="boolean"/>
-      <Setting Name="ExcludeMissing" Value="False" Type="boolean"/>
-      <Setting Name="IncludeGender" Value="False" Type="boolean"/>
-      <Setting Name="IncludeFullFirstName" Value="True" Type="boolean"/>
-      <Setting Name="IncludeMiddleInitial" Value="False" Type="boolean"/>
+      <Setting Name="UseConditionalFormatting" Value="True" />
+      <Setting Name="ExcludeSame" Value="True" Type="bool"/>
+      <Setting Name="ExcludeMissing" Value="False" Type="bool"/>
+      <Setting Name="IncludeGender" Value="False" Type="bool"/>
+      <Setting Name="IncludeFullFirstName" Value="True" Type="bool"/>
+      <Setting Name="IncludeMiddleInitial" Value="False" Type="bool"/>
       <Setting Name="InitialDirectoryCompare" Value="*Documents" Type="token" />
       <Setting Name="InitialDirectoryLoad" Value="*Documents" Type="token" />
       <Setting Name="InitialDirectoryExport" Value="*Documents" Type="token" />
-    </Default>
+	</Default>
   </UserSettings>
 </Settings>

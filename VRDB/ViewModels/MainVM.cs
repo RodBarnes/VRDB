@@ -63,13 +63,17 @@ namespace VRDB.ViewModels
                 var uri = new UriBuilder(codeBase);
                 var assyPath = Uri.UnescapeDataString(uri.Path);
                 ProgramAppPath = Path.GetDirectoryName(assyPath);
-                UserAppDataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{productPath}";
-                dataPath = UserAppDataPath;
+                UserRoamingPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{productPath}";
+                dataPath = UserRoamingPath;
                 docFilePath = ProgramAppPath;
 #endif
                 SettingsFilePath = $@"{ProgramAppPath}\Settings.xml";
                 DatabaseManager.DatabasePath = dataPath;
 
+#if DEBUG
+#else
+                FixRegistryDataPath(dataPath);
+#endif
                 InitAboutPanel();
                 InitBusyPanel(10000);
                 InitMainPanel();
@@ -264,6 +268,39 @@ namespace VRDB.ViewModels
             set
             {
                 includeMiddleInitial = (value == "True");
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool includeStreetName = false;
+        public string IncludeStreetName
+        {
+            get => includeStreetName ? "True" : "False";
+            set
+            {
+                includeStreetName = (value == "True");
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool includeStreetNumber = false;
+        public string IncludeStreetNumber
+        {
+            get => includeStreetNumber ? "True" : "False";
+            set
+            {
+                includeStreetNumber = (value == "True");
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool includeStreetType = false;
+        public string IncludeStreetType
+        {
+            get => includeStreetType ? "True" : "False";
+            set
+            {
+                includeStreetType = (value == "True");
                 NotifyPropertyChanged();
             }
         }
@@ -620,18 +657,18 @@ namespace VRDB.ViewModels
                 if (result == true)
                 {
                     InitialDirectoryExport = Path.GetDirectoryName(dlg.FileName);
-                    if (dlg.Filter.Contains("XLSX") &&  dlg.FilterIndex == 1)
+                    if (dlg.Filter.Contains("XLSX") && dlg.FilterIndex == 1)
                     {
                         XmlLibrary.ExportToXslx(
-                            "Comparison", 
-                            dlg.FileName, 
-                            SearchResults.ToList().ToDataTable(), 
-                            useConditionalFormatting, 
-                            excludeMissing, 
-                            excludeSame, 
-                            HighlightHeader, 
-                            HighlightMissing, 
-                            HighlightSame, 
+                            "Comparison",
+                            dlg.FileName,
+                            SearchResults.ToList().ToDataTable(),
+                            useConditionalFormatting,
+                            excludeMissing,
+                            excludeSame,
+                            HighlightHeader,
+                            HighlightMissing,
+                            HighlightSame,
                             HighlightDifferent
                         );
                     }
@@ -733,6 +770,9 @@ namespace VRDB.ViewModels
             rtn += includeGender ? 1 : 0;
             rtn += includeFullFirstName ? 2 : 0;
             rtn += includeMiddleInitial ? 4 : 0;
+            rtn += includeStreetName ? 8 : 0;
+            rtn += includeStreetNumber ? 16 : 0;
+            rtn += includeStreetType ? 32 : 0;
 
             return rtn;
         }
@@ -878,6 +918,80 @@ namespace VRDB.ViewModels
         {
             DatabaseManager.StatusRead(importStatus);
             OperationStatus = importStatus.ToString();
+        }
+
+        private void FixRegistryDataPath(string dataPath)
+        {
+            /* 2025-03-18 v2.3.0
+             * Something changed.  I updated to VS2022 17.13.2, which moved me to use SQL 2019, and Microsoft Video Studio Installer 2022 v2.0.1.
+             * Something in all this changed things so that SQL Server expects (requires?) the MSLocalDB to be located in a different location.
+             * The registry key:
+             *      HKEY_CURRENT_USER\SOFTWARE\Microsoft\Microsoft SQL Server\UserInstances\{AB9423F5-FD22-4251-9D76-83264E6792D2}\DataDirectory
+             * Has the value:
+             *      C:\Users\<user>\AppData\Local\Microsoft\Microsoft SQL Server Local DB\Instances\MSSQLLocalDB
+             * And VRDB fails to find the MDF file that is actually installed under:
+             *      C:\Users\<user>>\AppData\Roaming\Advanced Applications\VRDB
+             * If, after installing, I change that registry entry to be what the program expects, it works fine.  Without it, VRDB fails to find the
+             * DB and repeatedly writes errors (61 times) to the event log of the type:
+             *      Windows API call RegOpenKeyExW returned error code: 2. Windows system error message is: The system cannot find the file specified. Reported at line: 1035.
+             *      LocalDB parent instance version is invalid: MSSQL13E.LOCALDB
+             * So, adding this code to fix that entry to make this work
+             */
+
+            // Parameters
+            string rootKeyPath = @"SOFTWARE\Microsoft\Microsoft SQL Server\UserInstances\";
+            string valueNameToFind = "DataDirectory";
+
+            try
+            {
+                // Open the registry key
+                using (RegistryKey rootKey = Registry.CurrentUser.OpenSubKey(rootKeyPath, true))
+                {
+                    if (rootKey == null)
+                    {
+                        currentMessageAction = MessageAction.Acknowledge;
+                        window.MessagePanel.Show("EXCEPTION!", $"Root key path not found: {rootKeyPath}");
+                        return;
+                    }
+
+                    bool valueFound = false;
+
+                    // Get all subkey names
+                    string[] subKeyNames = rootKey.GetSubKeyNames();
+
+                    // Iterate through all subkeys
+                    foreach (string subKeyName in subKeyNames)
+                    {
+                        using (RegistryKey subKey = rootKey.OpenSubKey(subKeyName, true))
+                        {
+                            var parent = subKey.GetValue("ParentInstance").ToString();
+                            if (parent != null && parent == "MSSQL13E.LOCALDB")
+                            {
+                                // Check if this subkey contains the value we're looking for
+                                var value = subKey.GetValue(valueNameToFind).ToString();
+
+                                if (value != null)
+                                {
+                                    // Update the value
+                                    subKey.SetValue(valueNameToFind, dataPath);
+                                    valueFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!valueFound)
+                    {
+                        currentMessageAction = MessageAction.Acknowledge;
+                        window.MessagePanel.Show("EXCEPTION!", $"Value '{valueNameToFind}' not found in any subkey");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
         }
 
         #endregion

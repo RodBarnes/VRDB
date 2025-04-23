@@ -1,6 +1,16 @@
-2.3.0
+2.3.2 (4/22/2025)
+ - Fixed defect in Comparion search.  It was not being specific enough and the previous search was returning
+   incorrect result sets; i.e., too many results.
+
+2.3.1 (4/8/2025)
+ - Modified to expect only birth year in extract -- this was removed in 2025 extract -- so compares are correct.
+
+2.3.0 (3/19/2025)
  - Removed expectation for Mail4 or AbsenteeType as these are no longer supplied in 2025 extract
  - Increase SQL command timeout from default 30 to 60 seconds.
+ - Moved Settings.xml to the same location as the EXE.
+ - Updated database from SQL 2016 to SQL 2019.  This requires Windows 10 or better.  This change
+   was imposed by Microsoft as Visual Studio 2022 no longer supports developing database projects with SQL 2016.
 
 2.2.3 (unreleased)
  -	Date columns now sort correctly

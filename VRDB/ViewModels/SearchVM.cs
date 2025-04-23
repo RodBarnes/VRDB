@@ -52,6 +52,11 @@ namespace VRDB.Models
             }
         }
 
+        public int BirthYear
+        {
+            get => BirthDate.Year;
+        }
+
         private char gender;
         public char Gender
         {
