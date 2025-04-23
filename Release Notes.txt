@@ -1,3 +1,7 @@
+2.3.2 (4/22/2025)
+ - Fixed defect in Comparion search.  It was not being specific enough and the previous search was returning
+   incorrect result sets; i.e., too many results.
+
 2.3.1 (4/8/2025)
  - Modified to expect only birth year in extract -- this was removed in 2025 extract -- so compares are correct.
 
