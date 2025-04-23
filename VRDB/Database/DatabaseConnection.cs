@@ -73,6 +73,12 @@ namespace VRDB
                         cmd.Parameters.AddWithValue("@lastName", item.LastName.ToSqlString());
                         cmd.Parameters.AddWithValue("@birthYear", item.BirthYear);
 
+                        // FIX: 2.3.2
+                        var mbrAddress = new Address(item.Address, addrDirections, addrTypes);
+                        cmd.Parameters.AddWithValue("@streetName", mbrAddress.Name);
+                        cmd.Parameters.AddWithValue("@streetNumber", mbrAddress.Number);
+                        cmd.Parameters.AddWithValue("@streetType", mbrAddress.Type);
+
                         //if (DateTime.TryParse(item.BirthDate, out DateTime birthdate))
                         //{
                         //    cmd.Parameters.AddWithValue("@birthDate", birthdate);
@@ -101,7 +107,6 @@ namespace VRDB
                                 item.Compare = Constants.LabelMissing;
                                 while (reader.Read())
                                 {
-                                    var mbrAddress = new Address(item.Address, addrDirections, addrTypes);
                                     var mbrCity = item.City;
                                     var mbrState = item.State;
                                     var mbrZip = item.Zip;
