@@ -1125,15 +1125,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:VRDB"
-        "ProductCode" = "8:{A44510B1-37E9-4B9D-8E4D-92DFEE9901D4}"
-        "PackageCode" = "8:{6E933800-BACD-47DF-B54A-D57237E11E12}"
+        "ProductCode" = "8:{C9ABFD56-C3FB-4287-8650-44D0FC7A1F84}"
+        "PackageCode" = "8:{CCFB05C2-3241-47AC-8439-E8997C76DBEF}"
         "UpgradeCode" = "8:{584CB05C-DF19-4CDF-980B-3CB1EC118A4F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.4.0"
+        "ProductVersion" = "8:2.4.1"
         "Manufacturer" = "8:Advanced Applications"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1703,7 +1703,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_13B0406420CF4DF6958C5412734CDDBF"
             {
-            "SourcePath" = "8:..\\..\\WpfLibrary\\obj\\Debug\\WpfLibrary.dll"
+            "SourcePath" = "8:..\\..\\WpfLibrary\\obj\\Release\\WpfLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9219D37936DF4417AEBF2C4B095DF7D8"
@@ -1731,7 +1731,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7493B81062694534A31873475A31912C"
             {
-            "SourcePath" = "8:..\\VRDB\\obj\\Debug\\VRDB.exe"
+            "SourcePath" = "8:..\\VRDB\\obj\\Release\\VRDB.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9219D37936DF4417AEBF2C4B095DF7D8"
@@ -1759,7 +1759,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_85E92EF6AE1047C29BD5837EAF9DAD82"
             {
-            "SourcePath" = "8:..\\..\\CommonLibrary\\obj\\Debug\\CommonLibrary.dll"
+            "SourcePath" = "8:..\\..\\CommonLibrary\\obj\\Release\\CommonLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9219D37936DF4417AEBF2C4B095DF7D8"
