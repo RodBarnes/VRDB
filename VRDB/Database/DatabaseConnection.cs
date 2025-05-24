@@ -112,10 +112,14 @@ namespace VRDB
                             cmd.Parameters.AddWithValue("@streetType", mbrAddress.Type);
                         }
 
+                        // Execute the query and return the list of matching records
                         using (var reader = cmd.ExecuteReader())
                         {
+                            // Go through each record matching the criteria and attempt to find a near-exact
+                            // match using address, city, etc.
                             if (reader != null)
                             {
+                                // Begin by assuming it is missing
                                 item.Compare = Constants.LabelMissing;
                                 while (reader.Read())
                                 {
@@ -144,6 +148,11 @@ namespace VRDB
                                         $"\t{item.LastName}, {item.FirstName} {item.MiddleName}\n" +
                                         $"\tmember: {mbrAddress}, {mbrCity} {mbrState} {mbrZip}\n" +
                                         $"\tregdb: {regAddress}, {item.City} {item.State} {item.Zip}");
+
+                                    // If there's a match, stop looking
+                                    if (item.Compare == Constants.LabelSame)
+                                        break;
+
                                 }
                                 if (bw != null && bw.CancellationPending)
                                 {
